@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西原 旭 | Web Designer Portfolio</title>
+    <!-- Tailwind CSS for rapid styling, though custom CSS is also used for specific requirements -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        main: '#2C3E50',
+                        accent: '#E74C3C',
+                        bglight: '#ECF0F1',
+                        bgdark: '#1a252f', // Darker shade of main for dark mode bg
+                        textlight: '#333333',
+                        textdark: '#f3f4f6',
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'sans-serif'],
+                        en: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --accent: #E74C3C;
+            --bg-light: #ECF0F1;
+            --bg-dark: #1a252f;
+            --text-light: #333333;
+            --text-dark: #f3f4f6;
+        }
+
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Fade-in Animation for Elements */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Background Overlay */
+        .hero-bg {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(236, 240, 241, 0.85); /* Light mode overlay */
+            transition: background 0.3s ease;
+        }
+
+        .dark .hero-overlay {
+            background: rgba(26, 37, 47, 0.85); /* Dark mode overlay */
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dark .text-gradient {
+            background: linear-gradient(135deg, #ECF0F1, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Button Styles */
+        .btn-custom {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent);
+            z-index: -2;
+        }
+        
+        .btn-custom::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: #c0392b; /* Darker red on hover */
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-custom:hover::before {
+            width: 100%;
+        }
+
+        /* Portfolio Card Hover Effect */
+        .portfolio-card {
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        
+        .portfolio-img-wrap {
+            overflow: hidden;
+        }
+
+        .portfolio-img {
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-card:hover .portfolio-img {
+            transform: scale(1.05);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .portfolio-card:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        /* Form inputs focus */
+        .input-focus:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            display: flex;
+            animation: fadeInModal 0.3s ease;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            animation: slideInModal 0.4s ease;
+        }
+
+        @keyframes slideInModal {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-bglight text-textlight dark:bg-bgdark dark:text-textdark font-sans antialiased">
+
+    <header class="fixed w-full top-0 z-40 bg-bglight/90 dark:bg-bgdark/90 backdrop-blur-md shadow-sm transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="font-en font-bold text-2xl tracking-tighter text-main dark:text-white">
+                        A.N<span class="text-accent">.</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-600 hover:text-accent dark:text-gray-300 dark:hover:text-accent transition-colors font-medium">About</a>
+                    <a href="#skills" class="text-gray-600 hover:text-accent dark:text-gray-300 dark:hover:text-accent transition-colors font-medium">Skills</a>
+                    <a href="#works" class="text-gray-600 hover:text-accent dark:text-gray-300 dark:hover:text-accent transition-colors font-medium">Works</a>
+                    <a href="#contact" class="text-gray-600 hover:text-accent dark:text-gray-300 dark:hover:text-accent transition-colors font-medium">Contact</a>
+                </nav>
+
+                <!-- Tools (Theme Toggle & Mobile Menu Btn) -->
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 focus:outline-none transition-colors" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-sun hidden dark:block"></i>
+                        <i class="fas fa-moon block dark:hidden"></i>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-600 dark:text-gray-300 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-bglight dark:bg-bgdark border-t border-gray-200 dark:border-gray-700 absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
+                <a href="#about" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800">About</a>
+                <a href="#skills" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800">Skills</a>
+                <a href="#works" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800">Works</a>
+                <a href="#contact" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-accent hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="hero" class="relative h-screen flex items-center justify-center hero-bg overflow-hidden pt-16">
+        <div class="hero-overlay z-0"></div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto fade-in">
+            <h1 class="font-en text-5xl md:text-7xl font-bold mb-6 tracking-tight leading-tight">
+                <span class="block text-gradient">Colors Logic,</span>
+                <span class="block text-gradient">Designs Magic.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+                お客様と綿密なやり取りのなかで、<br class="hidden md:block">
+                企業の思いを「伝わる」形に。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="#works" class="btn-custom text-white px-8 py-4 rounded-full font-bold text-lg w-full sm:w-auto text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    実績を見る
+                </a>
+                <a href="#contact" class="px-8 py-4 rounded-full font-bold text-lg w-full sm:w-auto text-center border-2 border-main dark:border-white text-main dark:text-white hover:bg-main hover:text-white dark:hover:bg-white dark:hover:text-main transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-1">
+                    お問い合わせ
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+            <a href="#about" class="text-main dark:text-white opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fas fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-sm font-bold tracking-widest text-accent uppercase mb-2 font-en">About Me</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-main dark:text-white">私は…？</h3>
+                <div class="w-16 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12 fade-in">
+                <!-- Profile Image -->
+                <div class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 relative">
+                    <div class="absolute inset-0 bg-accent rounded-full transform translate-x-2 translate-y-2 opacity-20"></div>
+                    <!-- Using a generic placeholder illustration as requested -->
+                    <img src="https://placehold.co/400x400/2C3E50/ECF0F1?text=A.N" alt="西原 旭 プロフィール" class="w-full h-full object-cover rounded-full border-4 border-white dark:border-gray-800 shadow-xl relative z-10">
+                </div>
+
+                <!-- Bio Text -->
+                <div class="max-w-lg text-center md:text-left">
+                    <h4 class="text-2xl font-bold mb-4 text-main dark:text-white">はじめまして、西原 旭です。</h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 text-lg">
+                        フリーランスとして活動しています。<br>
+                        ただ綺麗なサイトを作るだけではありません。お客様との丁寧なやり取りの中で、言葉にできない「思い」や「ビジョン」を汲み取り、ユーザーの印象に残る、意味のあるデザインを提供します。
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                        あなたのビジネスの課題を、デザインの力で解決するパートナーでありたいと考えています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-24 bg-bglight dark:bg-bgdark transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-sm font-bold tracking-widest text-accent uppercase mb-2 font-en">My Strengths</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-main dark:text-white">私の長所</h3>
+                <div class="w-16 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 fade-in">
+                <!-- Strength 1 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-t-4 border-accent">
+                    <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-comments text-2xl text-accent"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-main dark:text-white mb-4">お客様とのコミュニケーションを大切にします</h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        デザインのクオリティは、事前のヒアリングで決まると言っても過言ではありません。目的、ターゲット、好みのテイストなどをじっくり伺い、認識のズレがない状態で制作を進めます。専門用語は極力使わず、分かりやすい説明を心がけています。
+                    </p>
+                </div>
+
+                <!-- Strength 2 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-t-4 border-main dark:border-gray-500">
+                    <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-2xl text-main dark:text-gray-300"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-main dark:text-white mb-4">迅速な対応を致します</h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        ビジネスにおいてスピードは重要な要素です。お問い合わせへの返信、修正対応、納品まで、お待たせすることなくスムーズな進行をお約束します。スケジュールを厳守し、安心してお任せいただける体制を整えています。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Technical Skills (Optional addition for context) -->
+            <div class="mt-20 fade-in">
+                <h4 class="text-center text-xl font-bold text-main dark:text-white mb-8">Technical Skills</h4>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-6 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2"><i class="fab fa-html5 text-orange-500"></i> HTML5</span>
+                    <span class="px-6 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2"><i class="fab fa-css3-alt text-blue-500"></i> CSS3 (Flex/Grid)</span>
+                    <span class="px-6 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2"><i class="fab fa-js text-yellow-400"></i> JavaScript</span>
+                    <span class="px-6 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2"><i class="fas fa-wind text-cyan-400"></i> Tailwind CSS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="works" class="py-24 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-sm font-bold tracking-widest text-accent uppercase mb-2 font-en">Portfolio</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-main dark:text-white">実績セクション</h3>
+                <div class="w-16 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+                <p class="mt-6 text-gray-600 dark:text-gray-400">これまでに作成した架空のプロジェクト事例です。クリックで詳細をご覧いただけます。</p>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in">
+                
+                <!-- Work Item 1 -->
+                <div class="portfolio-card relative bg-gray-100 dark:bg-gray-800 cursor-pointer shadow-lg group" onclick="openModal('work1')">
+                    <div class="portfolio-img-wrap h-64">
+                        <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=800" alt="Tech Company Site" class="portfolio-img w-full h-full object-cover">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 text-center">
+                            <span class="text-accent font-bold text-sm tracking-wider uppercase mb-2 block">Corporate</span>
+                            <h4 class="text-white text-xl font-bold mb-4">Tech StartUp HP</h4>
+                            <span class="inline-block px-6 py-2 border-2 border-white text-white rounded-full text-sm font-medium hover:bg-white hover:text-main transition-colors">詳細を見る</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Item 2 -->
+                <div class="portfolio-card relative bg-gray-100 dark:bg-gray-800 cursor-pointer shadow-lg group" onclick="openModal('work2')">
+                    <div class="portfolio-img-wrap h-64">
+                        <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&q=80&w=800" alt="Cafe Site" class="portfolio-img w-full h-full object-cover">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 text-center">
+                            <span class="text-accent font-bold text-sm tracking-wider uppercase mb-2 block">Shop</span>
+                            <h4 class="text-white text-xl font-bold mb-4">Organic Cafe</h4>
+                            <span class="inline-block px-6 py-2 border-2 border-white text-white rounded-full text-sm font-medium hover:bg-white hover:text-main transition-colors">詳細を見る</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Item 3 -->
+                <div class="portfolio-card relative bg-gray-100 dark:bg-gray-800 cursor-pointer shadow-lg group" onclick="openModal('work3')">
+                    <div class="portfolio-img-wrap h-64">
+                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=800" alt="App Landing Page" class="portfolio-img w-full h-full object-cover">
+                    </div>
+                    <div class="portfolio-overlay">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 text-center">
+                            <span class="text-accent font-bold text-sm tracking-wider uppercase mb-2 block">Landing Page</span>
+                            <h4 class="text-white text-xl font-bold mb-4">Task App LP</h4>
+                            <span class="inline-block px-6 py-2 border-2 border-white text-white rounded-full text-sm font-medium hover:bg-white hover:text-main transition-colors">詳細を見る</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-bglight dark:bg-bgdark transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-5">
+                    
+                    <!-- Contact Info Side -->
+                    <div class="md:col-span-2 bg-main p-10 text-white flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2">お問い合わせ<br>はこちら</h2>
+                            <p class="text-gray-300 mt-4 leading-relaxed text-sm">
+                                ご依頼、お見積り、その他ご相談はお気軽にどうぞ。<br>24時間以内に返信いたします。
+                            </p>
+                        </div>
+                        
+                        <div class="mt-10 space-y-6">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-envelope text-accent text-xl"></i>
+                                <span>hello@nishihara-design.test</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-clock text-accent text-xl"></i>
+                                <span>平日 10:00 - 18:00</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 flex gap-4">
+                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent transition-colors"><i class="fab fa-dribbble"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Form Side -->
+                    <div class="md:col-span-3 p-10">
+                        <form onsubmit="submitForm(event)" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">お名前 <span class="text-accent">*</span></label>
+                                <input type="text" id="name" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white input-focus transition-all duration-200"
+                                    placeholder="山田 太郎">
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">メールアドレス <span class="text-accent">*</span></label>
+                                <input type="email" id="email" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white input-focus transition-all duration-200"
+                                    placeholder="your@email.com">
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">お問い合わせ内容 <span class="text-accent">*</span></label>
+                                <textarea id="message" rows="5" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white input-focus transition-all duration-200 resize-none"
+                                    placeholder="プロジェクトの概要やご相談内容をご記入ください。"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full btn-custom text-white font-bold py-4 px-8 rounded-lg shadow-md hover:shadow-lg mt-4">
+                                送信する <i class="fas fa-paper-plane ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-main text-white py-8 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="font-en font-bold text-2xl tracking-tighter mb-4">
+                A.N<span class="text-accent">.</span>
+            </div>
+            <p class="text-gray-400 text-sm">
+                &copy; 2026 Asahi Nishihara. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal for Work 1 -->
+    <div id="modal-work1" class="modal items-center justify-center p-4">
+        <div class="modal-content bg-white dark:bg-gray-800 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal('modal-work1')" class="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-accent transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="overflow-y-auto">
+                <div class="h-64 md:h-80 w-full">
+                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=1200" alt="Tech StartUp" class="w-full h-full object-cover">
+                </div>
+                <div class="p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-sm rounded-full text-gray-700 dark:text-gray-300">コーポレートサイト</span>
+                        <span class="text-gray-500"><i class="far fa-clock"></i> 制作期間: 1.5ヶ月</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-main dark:text-white mb-6">Tech StartUp 企業サイトリニューアル</h3>
+                    
+                    <div class="space-y-6 text-gray-600 dark:text-gray-300">
+                        <div>
+                            <h4 class="text-xl font-bold text-main dark:text-white mb-2 border-l-4 border-accent pl-3">プロジェクト概要</h4>
+                            <p>AIソリューションを提供するスタートアップ企業のコーポレートサイトリニューアル。先進性と信頼感の両立を目指し、ダークテーマを基調としたスタイリッシュなデザインを提案しました。</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-main dark:text-white mb-2 border-l-4 border-accent pl-3">担当領域</h4>
+                            <p>ヒアリング、ワイヤーフレーム作成、デザイン(Figma)、コーディング(HTML/CSS/JS)、WordPress組込</p>
+                        </div>
+                        <div class="pt-6 text-center">
+                            <p class="text-sm text-gray-500 mb-4">※これは架空の実績です。実際のサイトへは遷移しません。</p>
+                            <button onclick="closeModal('modal-work1')" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">閉じる</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for Work 2 & 3 (Simplified for brevity, following same structure) -->
+    <div id="modal-work2" class="modal items-center justify-center p-4">
+        <div class="modal-content bg-white dark:bg-gray-800 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal('modal-work2')" class="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-accent transition-colors"><i class="fas fa-times"></i></button>
+            <div class="overflow-y-auto">
+                <div class="h-64 md:h-80 w-full"><img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover"></div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-main dark:text-white mb-4">Organic Cafe 店舗サイト</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">自然派カフェの新規オープンのためのウェブサイト。温かみのあるアースカラーを使用し、親しみやすさを演出しました。Instagram APIを連携し、最新のメニューが自動表示される仕組みを構築。</p>
+                    <div class="text-center mt-8"><button onclick="closeModal('modal-work2')" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">閉じる</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-work3" class="modal items-center justify-center p-4">
+        <div class="modal-content bg-white dark:bg-gray-800 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal('modal-work3')" class="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-accent transition-colors"><i class="fas fa-times"></i></button>
+            <div class="overflow-y-auto">
+                <div class="h-64 md:h-80 w-full"><img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover"></div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-main dark:text-white mb-4">Task App ランディングページ</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">新規タスク管理アプリの事前登録を促すランディングページ。コンバージョン率を高めるため、ファーストビューでの機能説明アニメーションと、視線を誘導するZ型レイアウトを採用。</p>
+                    <div class="text-center mt-8"><button onclick="closeModal('modal-work3')" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">閉じる</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // 1. Dark Mode Toggle
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or OS preference
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        // 2. Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // 3. Scroll Animation (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                    observer.unobserve(entry.target); // Once appeared, stop observing
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+
+        // 4. Modal Logic for Works Section
+        function openModal(workId) {
+            const modal = document.getElementById(`modal-${workId}`);
+            if(modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto'; // Restore background scrolling
+            }
+        }
+
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // 5. Form Submission (Mock)
+        function submitForm(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            
+            // Show loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中...';
+            btn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                // Show custom message box instead of alert()
+                const msg = document.createElement('div');
+                msg.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-0 z-50';
+                msg.innerHTML = '<i class="fas fa-check-circle mr-2"></i> お問い合わせを送信しました。';
+                document.body.appendChild(msg);
+
+                // Reset form
+                e.target.reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                // Remove message after 3 seconds
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                    msg.style.transform = 'translateY(20px)';
+                    setTimeout(() => msg.remove(), 300);
+                }, 3000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
